@@ -1,6 +1,7 @@
 import base64
 import numpy as np
 import math
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -8,12 +9,24 @@ from deepface import DeepFace
 import cv2
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+
+# ------------------ ENVIRONMENT CONFIG ------------------
+# Load local environment variables (if running on your laptop)
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+
+# Dynamically set the allowed frontend URL
+# If on Render, it uses the Vercel link. If on your laptop, it defaults to localhost.
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+CORS(app, resources={r"/api/*": {"origins": FRONTEND_URL}}, supports_credentials=True)
 
 # ------------------ DATABASE ------------------
-client = MongoClient("mongodb://localhost:27017/")
+# Dynamically connect to the Database
+# If on Render, it uses Atlas. If on your laptop, it defaults to local MongoDB.
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+client = MongoClient(MONGO_URI)
 db = client["smart_attendance"]
 
 MODEL = "Facenet"
