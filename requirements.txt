@@ -19,5 +19,6 @@ bcrypt==4.1.2
 # Environment Variables
 python-dotenv==1.0.0
 
-# TensorFlow Compatibility Fix
-tf-keras==2.15.0
+# Strict lock on TF and Keras to prevent version mismatch crashes
+tensorflow==2.15.0
+keras==2.15.0
